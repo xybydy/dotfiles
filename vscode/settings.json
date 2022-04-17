@@ -2,14 +2,14 @@
   "editor.fontSize": 14,
   "editor.fontLigatures": true,
   "debug.console.fontSize": 16,
-  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontSize": 14,
   "editor.fontFamily": "Comic Mono, Fantasque Sans Mono, Monaco, 'Courier New', monospace",
   "workbench.iconTheme": "ayu",
-  "workbench.colorTheme": "Monokai Pro (Filter Spectrum)",
+  "workbench.colorTheme": "Ayu Dark",
   "editor.tabSize": 2,
 
   "editor.bracketPairColorization.enabled": true,
-  "editor.minimap.enabled": true,
+  "editor.minimap.enabled": false,
 
   // Trim whitespace
   "files.trimTrailingWhitespace": true,
@@ -64,5 +64,10 @@
     "editor.defaultFormatter": "vscode.json-language-features"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "workbench.editor.untitled.hint": "hidden"
+  "workbench.editor.untitled.hint": "hidden",
+  "workbench.startupEditor": "none",
+  "workbench.editor.languageDetection": false,
+  "workbench.preferredDarkColorTheme": "Ayu Dark",
+  "window.autoDetectColorScheme": true,
+  "editor.unicodeHighlight.nonBasicASCII": false
 }
