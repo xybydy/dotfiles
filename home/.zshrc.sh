@@ -17,7 +17,9 @@ fpath=("$curr/terminal" $fpath)
 autoload -Uz promptinit && promptinit
 prompt 'paulmillr'
 
-# path=(/usr/local/opt/ruby/bin $HOME/.cargo/bin $path) # changing .zshenv doesn't work
+# The icrnl setting tells the terminal driver in the kernel to convert the CR character to LF on input. This way, applications only need to worry about one newline character; the same newline character that ends lines in files also ends lines of user input on the terminal, so the application doesn't need to have a special case for that.
+# Fixes <Return> key bugs with some secure keyboards etc
+stty icrnl
 export GPG_TTY=$(tty) # For git commit signing
 
 # ==================================================================
