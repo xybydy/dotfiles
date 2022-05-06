@@ -92,12 +92,12 @@ fi
 unset gitssh
 
 
-if (( $+commands[code] )); then
-  export EDITOR=$commands[code]
-  export VISUAL=$commands[code]
-else
-  export EDITOR=$commands[vim]
-  export VISUAL=$commands[vim]
-fi
+# if (( $+commands[code] )); then
+#   export EDITOR=$commands[code]
+#   export VISUAL=$commands[code]
+# else
+#   export EDITOR=$commands[vim]
+#   export VISUAL=$commands[vim]
+# fi
 
 export SSH_AUTH_SOCK="${HOME}/.gnupg/S.gpg-agent.ssh"
