@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dev="$HOME/Developer"
-dotfiles="$dev/personal/dotfiles"
+dotfiles="$dev/.personal/dotfiles"
 
 echo ""
 if [ -d "$dotfiles" ]; then

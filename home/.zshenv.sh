@@ -39,7 +39,7 @@ typeset -gUT INFOPATH infopath
 # Commonly used directories.
 dev="$HOME/Developer"
 com="$dev/com"
-pm="$dev/personal"
+pm="$dev/.personal"
 as="$HOME/Library/Application Support"
 
 # path=($HOME/.cargo/bin /usr/local/opt/ruby/bin $path) # changing .zshenv doesn't work
