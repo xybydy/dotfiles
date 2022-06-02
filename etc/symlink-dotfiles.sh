@@ -14,11 +14,9 @@ fi
 link() {
   from="$1"
   to="$2"
-  if [ -f "$to" ]; then
-    echo "Linking '$from' to '$to'"
-    rm -f "$to"
-    ln -s "$from" "$to"
-  fi
+  echo "Linking '$from' to '$to'"
+  rm -f "$to"
+  ln -s "$from" "$to"
 }
 
 for location in $(find home -name '.*'); do
@@ -30,7 +28,11 @@ done
 link $dotfiles/vim $HOME/.vim
 
 if [ `uname` == 'Darwin' ]; then
-  link "$dotfiles/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+  vsdir="$HOME/Library/Application Support/Code/User"
 else
-  link "$dotfiles/vscode/settings.json" "$HOME/.vscode/settings.json"
+  vsdir="$HOME/.vscode"
+fi
+
+if [ -d "$vsdir" ]; then
+  link "$dotfiles/vscode/settings.json" "$vsdir/settings.json"
 fi
