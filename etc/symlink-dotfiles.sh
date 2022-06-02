@@ -27,7 +27,7 @@ done
 
 link $dotfiles/vim $HOME/.vim
 unm=$(uname)
-if [ unm = 'Darwin' ]; then
+if [ $unm = 'Darwin' ]; then
   vsdir="$HOME/Library/Application Support/Code/User"
 else
   vsdir="$HOME/.vscode"
