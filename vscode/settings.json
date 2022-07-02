@@ -4,8 +4,6 @@
   "debug.console.fontSize": 16,
   "terminal.integrated.fontSize": 14,
   "editor.fontFamily": "Comic Mono, Fantasque Sans Mono, Monaco, 'Courier New', monospace",
-  "workbench.iconTheme": "ayu",
-  "workbench.colorTheme": "Ayu Dark",
   "editor.tabSize": 2,
 
   "editor.bracketPairColorization.enabled": true,
@@ -48,7 +46,6 @@
 
   "explorer.openEditors.visible": 10,
   "explorer.confirmDelete": false,
-  "workbench.activityBar.visible": true,
   "javascript.implicitProjectConfig.checkJs": true,
   "editor.renderWhitespace": "selection",
   "editor.renderControlCharacters": false,
@@ -58,7 +55,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -69,5 +66,13 @@
   "workbench.editor.languageDetection": false,
   "workbench.preferredDarkColorTheme": "Ayu Dark",
   "window.autoDetectColorScheme": true,
-  "editor.unicodeHighlight.nonBasicASCII": false
+  "editor.unicodeHighlight.nonBasicASCII": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "breadcrumbs.enabled": false,
+  "workbench.preferredLightColorTheme": "Iceberg Light",
+  "workbench.iconTheme": "Monokai Pro (Filter Machine) Monochrome Icons",
+  "git.enabled": false,
+  "workbench.colorTheme": "Gray Matter Light"
 }
