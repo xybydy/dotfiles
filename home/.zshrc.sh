@@ -25,6 +25,12 @@ export GPG_TTY=$(tty) # For git commit signing
 # ==================================================================
 # = Aliases =
 # ==================================================================
+alias -g CNT="| wc -l"
+alias -g COUNT="| wc -l"
+alias -g SUM="| wc -l"
+alias -g H="| head"
+alias -g T="| tail"
+
 # Simple clear command.
 alias cl='clear'
 
