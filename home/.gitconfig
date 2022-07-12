@@ -1,7 +1,7 @@
 [user]
   name = Paul Miller
   email = paul@paulmillr.com
-  signingkey = 46BEEF337A641ABB
+  signingkey = 78A89CD10959782E23FF8447697079DA6878B89B
 [commit]
   gpgsign = true
 [github]
