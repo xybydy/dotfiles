@@ -71,11 +71,11 @@ alias gdisc='git discard'
 
 function gc() {
   args=$@
-  git commit -m "$args"
+  git commit -m "$args" --date=$(date -u +%Y-%m-%dT%H:%M:%S%z)
 }
 function gca() {
   args=$@
-  git commit --amend -m "$args"
+  git commit --amend -m "$args" --date=$(date -u +%Y-%m-%dT%H:%M:%S%z)
 }
 
 function cherry() {

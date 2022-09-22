@@ -18,7 +18,8 @@ hook() {
 
 if test $# -gt 0; then
   echo "... releasing $1"
-  git commit -a -m "Release $1." \
+  ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  git commit -a -m "Release $1." --date=$ndate \
     && git tag $1 \
     && git push \
     && git push --tags \
