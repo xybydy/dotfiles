@@ -73,7 +73,7 @@ function gc() {
   args=$@
   git commit -m "$args" --date=$(date -u +%Y-%m-%dT%H:%M:%S%z)
 }
-function gca() {
+function gcam() {
   args=$@
   git commit --amend -m "$args" --date=$(date -u +%Y-%m-%dT%H:%M:%S%z)
 }
@@ -127,17 +127,15 @@ function gl() {
 # Dev short-cuts.
 # ===============
 
-# Brunch.
-alias bb='brunch build'
-alias bbp='brunch build --production'
-alias bw='brunch w'
-alias bws='brunch w --server'
-
 # Package managers.
+alias ni='npm install'
 alias nr='npm run'
+alias nt='npm test'
+alias nrb='npm run build'
+alias npack='npm pack --dry-run'
 alias jk='jekyll serve --watch' # lol jk
 # alias serve='http-serve' # npm install http-server
-alias serve='python -m SimpleHTTPServer'
+alias serve='python3 -m http.server'
 alias server='serve'
 
 # Ruby.
@@ -338,42 +336,12 @@ function tarbz2() {
 }
 
 alias untarbz2='tar -xvjf'
-
-function tarbzage() {
-  file="$1"
-  tarf="$file.tar.bz2"
-  agef="$file.tar.bz2.age"
-  tarbz2 $file
-  age -p $tarf > $agef
-  rm $tarf
+function tarxz() {
+  inf="$1"
+  outf="$1.tar.xz"
+  XZ_OPT=-9 tar -Jcvjf "$outf" "$inf"
 }
-
-function untarbzage() {
-  agef="$1"
-  tarf="${agef/.age/}"
-  file="${tarf/.tar.bz2/}"
-  age -d $agef > $tarf
-  tar -xf $tarf
-  rm $tarf
-}
-
-function tarage() {
-  file="$1"
-  tarf="$file.tar"
-  agef="$file.tar.age"
-  tar -cf "$tarf" "$file"
-  age -p $tarf > $agef
-  rm $tarf
-}
-
-function untarage() {
-  agef="$1"
-  tarf="${agef/.age/}"
-  file="${tarf/.tar.bz2/}"
-  age -d $agef > $tarf
-  tar -xf $tarf
-  rm $tarf
-}
+alias untarxz='tar -xvf'
 
 function remove-node-modules() {
   find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
@@ -385,6 +353,33 @@ function update-debian() {
 
 function update-mac() {
   brew update && brew upgrade
+}
+
+backup-github() {
+  user='paulmillr'
+  title='backup'
+  function dlpage() {
+    echo "\nDownloading page $1...\n"
+    curl -s https://api.github.com/users/${user}/repos\?page\=${1} | grep \"clone_url\" | awk '{print $2}' | sed -e 's/"//g' -e 's/,//g' | xargs -n1 git clone
+  }
+  echo "Backing up all github repos for user ${user} into dir '$title'"
+  mkdir $title && cd $title
+  dlpage 1
+  dlpage 2
+  dlpage 3
+  # Remove forks and useless stuff
+  rm -rf LiveScript.tmbundle bip39 bitcoinjs-lib bs58check cryptofuzz ed25519-unsafe-libs ethereumjs-wallet fast-check firefox-jsterm gitsha256 keythereum kzg-ceremony micro-base58 micro-es7-shim micro-starknet noble-ed25519-cr noble-ripemd160 packed paulmillr.github.io roy.tmbundle unused-test-repo voprf-ts
+  # Move old stuff into `archived` directory
+  mv Array.prototype.find Array.prototype.findIndex argumentum chieftain code-style-guides console-polyfill exoskeleton fcache fetch-streaming github-pull-req-stats jage lastfm-tools loggy microtemplates mnp native-notifier ostio ostio-api pushserve quickly-copy-file read-components scaffolt tag-shell top-github-users unicode-categories universal-path archived
+  # Create .tar.bz2 archive
+  cd ..
+  # Sign archive then
+}
+backup-github-sign() {
+  # Sign archive
+  title='backup'
+  tarbz2 $title
+  gpg --output ${title}.tar.bz2.sig --sign ${title}.tar.bz2
 }
 
 alias logs='journalctl -fu'
