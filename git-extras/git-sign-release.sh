@@ -16,7 +16,7 @@ if test $# -gt 0; then
     && git tag $1 -s -m '' \
     && git push \
     && git push --tags \
-    && test -f 'package.json' && npm publish
+    # && test -f 'package.json' && npm publish
   echo "... complete"
 else
   echo "tag required" 1>&2 && exit 1
