@@ -19,8 +19,7 @@ hook() {
 if test $# -gt 0; then
   echo "... releasing $1"
   ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
-  git commit -a -m "Release $1." --date=$ndate \
-    && git tag $1 \
+  GIT_AUTHOR_DATE=$ndate GIT_COMMITTER_DATE=$ndate git commit -a -m "Release $1." && git tag $1 \
     && git push \
     && git push --tags \
     # && test -f 'package.json' && npm publish
