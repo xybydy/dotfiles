@@ -21,8 +21,10 @@ yarn.lock
 .pnp.cjs
 .yarn
 package-lock.json
+pnpm-lock.yaml
 /.nyc_output/
 
 # Other
 *.pyc
 /tmp
+/.zed

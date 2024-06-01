@@ -25,15 +25,6 @@ export GPG_TTY=$(tty) # For git commit signing
 # ==================================================================
 # = Aliases =
 # ==================================================================
-alias -g CNT="| wc -l"
-alias -g COUNT="| wc -l"
-alias -g SUM="| wc -l"
-alias -g H="| head"
-alias -g T="| tail"
-
-# Simple clear command.
-alias cl='clear'
-
 # Disable sertificate check for wget.
 # alias wget='wget --no-check-certificate'
 
@@ -59,6 +50,8 @@ else
   alias pgrep='pgrep -fl'
 fi
 
+alias cl='clear'
+
 # Git short-cuts.
 alias g='git'
 alias ga='git add'
@@ -71,11 +64,13 @@ alias gdisc='git discard'
 
 function gc() {
   args=$@
-  git commit -m "$args" --date=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  GIT_AUTHOR_DATE=$ndate GIT_COMMITTER_DATE=$ndate git commit -m "$args"
 }
 function gcam() {
   args=$@
-  git commit --amend -m "$args" --date=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  GIT_AUTHOR_DATE=$ndate GIT_COMMITTER_DATE=$ndate git commit --amend -m "$args"
 }
 
 function cherry() {
@@ -121,47 +116,51 @@ function gl() {
   git --no-pager log --graph --no-merges --max-count=$count
 }
 
-# own git workflow in hy origin with Tower
-
 # ===============
 # Dev short-cuts.
 # ===============
 
-# Package managers.
+# Node.js
 alias ni='npm install'
 alias nr='npm run'
 alias nt='npm test'
 alias nrb='npm run build'
-alias npack='npm pack --dry-run'
-alias jk='jekyll serve --watch' # lol jk
-# alias serve='http-serve' # npm install http-server
+alias nrl='npm run lint'
+alias pack='npm pack --dry-run'
+function npm-init() {
+  local dir="$1"
+  if [ -z "$dir" ]; then
+    echo "First argument - dir name"
+    return 0
+  fi
+  mkdir $dir
+  cd $dir
+  npm init -y
+  touch a.mjs
+}
+# if (( $+commands[pnpm] )); then
+#   alias npm=pnpm
+# fi
+
 alias serve='python3 -m http.server'
 alias server='serve'
 
-# Ruby.
-alias bx='bundle exec'
-alias bex='bundle exec'
-alias migr='bundle exec rake db:migrate'
-
-# $ git log --no-merges --pretty=format:"%ae" | stats
-# # => 514 a@example.com
-# # => 200 b@example.com
+alias bex='bundle exec' # Ruby
 alias stats='sort | uniq -c | sort -r'
+alias git-stats='git log --no-merges --pretty=format:"%ae" | stats'
 # Lists the ten most used commands.
 alias history-stats="history 0 | awk '{print \$2}' | stats | head"
-
 # Checks whether connection is up.
 alias net="ping google.com | grep -E --only-match --color=never '[0-9\.]+ ms'"
-
-# Pretty print json
-if (( $+commands[pygmentize] )); then
-  alias json='pygmentize -l json -g'
-  alias markdown='pygmentize -l md -g'
-  alias md='pygmentize -l md -g'
-else
-  alias json='python -m json.tool'
-fi
-alias pygm=pygmentize
+alias untarbz2='tar -xvjf'
+alias untarxz='tar -xvf'
+alias hist='history 0 | grep' # for searching command history. `hist git`
+alias remove-node-modules="find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
+alias update-debian='sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y'
+alias update-mac='brew update && brew upgrade'
+alias logs='journalctl -fu'
+alias logs-all='journalctl -u'
+alias ctl='systemctl'
 
 # ==================================================================
 # = Functions =
@@ -284,10 +283,6 @@ function size() {
       {gsub(/^[0-9]+/, human($1)); print}'
 }
 
-# Shortcut for searching commands history.
-# hist git
-alias hist='history 0 | grep'
-
 # 4 lulz.
 function compute() {
   while true; do head -n 100 /dev/urandom; sleep 0.1; done \
@@ -304,14 +299,6 @@ function maxcpu() {
     (( ++i ))
   done
   echo "Loaded $cores cores. To stop: 'killall yes'"
-}
-
-# $ retry ping google.com
-function retry() {
-  echo Retrying "$@"
-  $@
-  sleep 1
-  retry $@
 }
 
 # Simple .tar archiving.
@@ -334,58 +321,10 @@ function tarbz2() {
     tar -cvjf "$outf" "$inf"
   fi
 }
-
-alias untarbz2='tar -xvjf'
 function tarxz() {
   inf="$1"
   outf="$1.tar.xz"
   XZ_OPT=-9 tar -Jcvjf "$outf" "$inf"
 }
-alias untarxz='tar -xvf'
 
-function remove-node-modules() {
-  find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
-}
-
-function update-debian() {
-  sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y
-}
-
-function update-mac() {
-  brew update && brew upgrade
-}
-
-backup-github() {
-  user='paulmillr'
-  title='backup'
-  function dlpage() {
-    echo "\nDownloading page $1...\n"
-    curl -s https://api.github.com/users/${user}/repos\?page\=${1} | grep \"clone_url\" | awk '{print $2}' | sed -e 's/"//g' -e 's/,//g' | xargs -n1 git clone
-  }
-  echo "Backing up all github repos for user ${user} into dir '$title'"
-  mkdir $title && cd $title
-  dlpage 1
-  dlpage 2
-  dlpage 3
-  # Remove forks and useless stuff
-  rm -rf LiveScript.tmbundle bip39 bitcoinjs-lib bs58check cryptofuzz ed25519-unsafe-libs ethereumjs-wallet fast-check firefox-jsterm gitsha256 keythereum kzg-ceremony micro-base58 micro-es7-shim micro-starknet noble-ed25519-cr noble-ripemd160 packed paulmillr.github.io roy.tmbundle unused-test-repo voprf-ts
-  # Move old stuff into `archived` directory
-  mv Array.prototype.find Array.prototype.findIndex argumentum chieftain code-style-guides console-polyfill exoskeleton fcache fetch-streaming github-pull-req-stats jage lastfm-tools loggy microtemplates mnp native-notifier ostio ostio-api pushserve quickly-copy-file read-components scaffolt tag-shell top-github-users unicode-categories universal-path archived
-  # Create .tar.bz2 archive
-  cd ..
-  # Sign archive then
-}
-backup-github-sign() {
-  # Sign archive
-  title='backup'
-  tarbz2 $title
-  gpg --output ${title}.tar.bz2.sig --sign ${title}.tar.bz2
-}
-
-alias logs='journalctl -fu'
-alias logs-all='journalctl -u'
-alias ctl='systemctl'
-
-function nginx-edit() {
-  sudo vim /etc/nginx/sites-available
-}
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
