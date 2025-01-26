@@ -10,22 +10,21 @@
 .DS_Store
 .cache
 
-# Folders to ignore
+# Version control
 .hg
 .svn
 
-# Node.js package manager
-/bower_components
+# Node.js
 /node_modules
 /npm-debug.log
-
-# Other stuff
-*.pyc
-/tmp
-
-# Project stuff
 yarn.lock
 .pnp.cjs
 .yarn
 package-lock.json
+pnpm-lock.yaml
 /.nyc_output/
+
+# Other
+*.pyc
+/tmp
+/.zed

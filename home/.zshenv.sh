@@ -92,7 +92,10 @@ fi
 unset gitssh
 
 
-# if (( $+commands[code] )); then
+# if (( $+commands[zed] )); then
+#   export EDITOR=$commands[zed]
+#   export VISUAL=$commands[zed]
+# elif (( $+commands[code] )); then
 #   export EDITOR=$commands[code]
 #   export VISUAL=$commands[code]
 # else

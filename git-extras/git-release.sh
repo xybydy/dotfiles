@@ -18,11 +18,11 @@ hook() {
 
 if test $# -gt 0; then
   echo "... releasing $1"
-  git commit -a -m "Release $1." \
-    && git tag $1 \
+  ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  GIT_AUTHOR_DATE=$ndate GIT_COMMITTER_DATE=$ndate git commit -a -m "Release $1." && git tag $1 \
     && git push \
     && git push --tags \
-    && test -f 'package.json' && npm publish
+    # && test -f 'package.json' && npm publish
   echo "... complete"
 else
   echo "tag required" 1>&2 && exit 1

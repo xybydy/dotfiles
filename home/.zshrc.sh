@@ -25,9 +25,6 @@ export GPG_TTY=$(tty) # For git commit signing
 # ==================================================================
 # = Aliases =
 # ==================================================================
-# Simple clear command.
-alias cl='clear'
-
 # Disable sertificate check for wget.
 # alias wget='wget --no-check-certificate'
 
@@ -53,6 +50,8 @@ else
   alias pgrep='pgrep -fl'
 fi
 
+alias cl='clear'
+
 # Git short-cuts.
 alias g='git'
 alias ga='git add'
@@ -65,11 +64,13 @@ alias gdisc='git discard'
 
 function gc() {
   args=$@
-  git commit -m "$args"
+  ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  GIT_AUTHOR_DATE=$ndate GIT_COMMITTER_DATE=$ndate git commit -m "$args"
 }
-function gca() {
+function gcam() {
   args=$@
-  git commit --amend -m "$args"
+  ndate=$(date -u +%Y-%m-%dT%H:%M:%S%z)
+  GIT_AUTHOR_DATE=$ndate GIT_COMMITTER_DATE=$ndate git commit --amend -m "$args"
 }
 
 function cherry() {
@@ -115,49 +116,51 @@ function gl() {
   git --no-pager log --graph --no-merges --max-count=$count
 }
 
-# own git workflow in hy origin with Tower
-
 # ===============
 # Dev short-cuts.
 # ===============
 
-# Brunch.
-alias bb='brunch build'
-alias bbp='brunch build --production'
-alias bw='brunch w'
-alias bws='brunch w --server'
-
-# Package managers.
+# Node.js
+alias ni='npm install'
 alias nr='npm run'
-alias jk='jekyll serve --watch' # lol jk
-# alias serve='http-serve' # npm install http-server
-alias serve='python -m SimpleHTTPServer'
+alias nt='npm test'
+alias nrb='npm run build'
+alias nrl='npm run lint'
+alias pack='npm pack --dry-run'
+function npm-init() {
+  local dir="$1"
+  if [ -z "$dir" ]; then
+    echo "First argument - dir name"
+    return 0
+  fi
+  mkdir $dir
+  cd $dir
+  npm init -y
+  touch a.mjs
+}
+# if (( $+commands[pnpm] )); then
+#   alias npm=pnpm
+# fi
+
+alias serve='python3 -m http.server'
 alias server='serve'
 
-# Ruby.
-alias bx='bundle exec'
-alias bex='bundle exec'
-alias migr='bundle exec rake db:migrate'
-
-# $ git log --no-merges --pretty=format:"%ae" | stats
-# # => 514 a@example.com
-# # => 200 b@example.com
+alias bex='bundle exec' # Ruby
 alias stats='sort | uniq -c | sort -r'
+alias git-stats='git log --no-merges --pretty=format:"%ae" | stats'
 # Lists the ten most used commands.
 alias history-stats="history 0 | awk '{print \$2}' | stats | head"
-
 # Checks whether connection is up.
 alias net="ping google.com | grep -E --only-match --color=never '[0-9\.]+ ms'"
-
-# Pretty print json
-if (( $+commands[pygmentize] )); then
-  alias json='pygmentize -l json -g'
-  alias markdown='pygmentize -l md -g'
-  alias md='pygmentize -l md -g'
-else
-  alias json='python -m json.tool'
-fi
-alias pygm=pygmentize
+alias untarbz2='tar -xvjf'
+alias untarxz='tar -xvf'
+alias hist='history 0 | grep' # for searching command history. `hist git`
+alias remove-node-modules="find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
+alias update-debian='sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y'
+alias update-mac='brew update && brew upgrade'
+alias logs='journalctl -fu'
+alias logs-all='journalctl -u'
+alias ctl='systemctl'
 
 # ==================================================================
 # = Functions =
@@ -280,10 +283,6 @@ function size() {
       {gsub(/^[0-9]+/, human($1)); print}'
 }
 
-# Shortcut for searching commands history.
-# hist git
-alias hist='history 0 | grep'
-
 # 4 lulz.
 function compute() {
   while true; do head -n 100 /dev/urandom; sleep 0.1; done \
@@ -300,14 +299,6 @@ function maxcpu() {
     (( ++i ))
   done
   echo "Loaded $cores cores. To stop: 'killall yes'"
-}
-
-# $ retry ping google.com
-function retry() {
-  echo Retrying "$@"
-  $@
-  sleep 1
-  retry $@
 }
 
 # Simple .tar archiving.
@@ -330,61 +321,10 @@ function tarbz2() {
     tar -cvjf "$outf" "$inf"
   fi
 }
-
-alias untarbz2='tar -xvjf'
-
-function tarbzage() {
-  file="$1"
-  tarf="$file.tar.bz2"
-  agef="$file.tar.bz2.age"
-  tarbz2 $file
-  age -p $tarf > $agef
-  rm $tarf
+function tarxz() {
+  inf="$1"
+  outf="$1.tar.xz"
+  XZ_OPT=-9 tar -Jcvjf "$outf" "$inf"
 }
 
-function untarbzage() {
-  agef="$1"
-  tarf="${agef/.age/}"
-  file="${tarf/.tar.bz2/}"
-  age -d $agef > $tarf
-  tar -xf $tarf
-  rm $tarf
-}
-
-function tarage() {
-  file="$1"
-  tarf="$file.tar"
-  agef="$file.tar.age"
-  tar -cf "$tarf" "$file"
-  age -p $tarf > $agef
-  rm $tarf
-}
-
-function untarage() {
-  agef="$1"
-  tarf="${agef/.age/}"
-  file="${tarf/.tar.bz2/}"
-  age -d $agef > $tarf
-  tar -xf $tarf
-  rm $tarf
-}
-
-function remove-node-modules() {
-  find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
-}
-
-function update-debian() {
-  sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade -y
-}
-
-function update-mac() {
-  brew update && brew upgrade
-}
-
-alias logs='journalctl -fu'
-alias logs-all='journalctl -u'
-alias ctl='systemctl'
-
-function nginx-edit() {
-  sudo vim /etc/nginx/sites-available
-}
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
