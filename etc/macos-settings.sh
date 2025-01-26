@@ -20,13 +20,13 @@ sudo pmset -a hibernatemode 25
 # Also modify your standby and power nap settings.
 # Otherwise, your machine may wake while in standby mode and then
 # power off due to the absence of the FileVault key
-sudo pmset -a powernap 0
-sudo pmset -a standby 0
-sudo pmset -a standbydelay 0
-sudo pmset -a autopoweroff 0
+# sudo pmset -a powernap 0
+# sudo pmset -a standby 0
+# sudo pmset -a standbydelay 0
+# sudo pmset -a autopoweroff 0
 
 # Show battery life percentage.
-# defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 
 # Reveal IP address, hostname, OS version, etc. when clicking the clock
 # in the login window
